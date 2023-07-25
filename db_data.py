@@ -1,10 +1,8 @@
 import requests
-import discord
 from db.client import db_client
 from db.models.model import TopLeagueTeams
 
 # Football api: https://www.football-data.org/documentation/quickstart
-# Discord documentation: https://discordpy.readthedocs.io/en/latest/intro.html
 
 top_5_ligues_array = [{"premier_league": 2021}, {"ligue_one": 2015}, {"bundesliga": 2002}, 
                       {"serie_a": 2019}, {"primeira_liga": 2017}]
