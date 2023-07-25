@@ -1,5 +1,7 @@
 import requests
 import discord
+from db.client import db_client
+from db.models.model import TopLeagueTeams
 
 # Football api: https://www.football-data.org/documentation/quickstart
 # Discord documentation: https://discordpy.readthedocs.io/en/latest/intro.html
@@ -12,9 +14,14 @@ endpoint_headers = {
 }
 
 
-for id in top_5_ligues_array:
-    response = requests.get(f"https://api.football-data.org/v4/competitions/{list(id.values())[0]}/teams", 
+for league in top_5_ligues_array:
+    response = requests.get(f"https://api.football-data.org/v4/competitions/{list(league.values())[0]}/teams", 
                             headers=endpoint_headers)
-    output = response.json()["teams"]
-    for teams in output:
-        print(teams["name"], teams["id"])
+    teams = response.json()["teams"]
+    for team in teams:
+        new_team = TopLeagueTeams(team_name = team["name"],
+                                  team_id = team["id"],
+                                  league_name = list(league.keys())[0],
+                                  league_id = list(league.values())[0])
+        data = new_team.model_dump()
+        db_client.league_teams.insert_one(data)
