@@ -1,7 +1,6 @@
 import discord
 import requests
 from datetime import date, timedelta
-from pydantic import BaseModel
 from table2ascii import table2ascii as t2a, PresetStyle
 
 
@@ -14,13 +13,6 @@ CURRENT_DATE = date.today()
 
 top_5_ligues_array = [{"premier_league": 2021}, {"ligue_one": 2015}, {"bundesliga": 2002}, 
                       {"serie_a": 2019}, {"primeira_liga": 2017}]
-
-class TopLeagueTeams(BaseModel):
-    team_name: str
-    team_id: int
-    league_name: str
-    league_id: int
-
 
 endpoint_headers = {
     "X-Auth-Token": "aaf02ea4244745a5a8140e4f4cbdbc90"
