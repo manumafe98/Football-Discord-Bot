@@ -50,15 +50,13 @@ table = t2a(
 )
 
 # Get Team next match
-# team_id = input("enter team id: ")
-# response = requests.get(f"https://api.football-data.org/v4/teams/{team_id}/matches/", 
-# headers=endpoint_headers, params=endpoint_params)
-# output = response.json()
+team_id = input("enter team id: ")
+response = requests.get(f"https://api.football-data.org/v4/teams/{team_id}/matches/", 
+headers=endpoint_headers, params=endpoint_params)
+output = response.json()
 
-# home_team_logo = output["matches"][0]["homeTeam"]["crest"]
-# home_team_name = output["matches"][0]["homeTeam"]["name"]
+home_team_logo = output["matches"][0]["homeTeam"]["crest"]
+home_team_name = output["matches"][0]["homeTeam"]["name"]
 
-# away_team_logo = output["matches"][0]["awayTeam"]["crest"]
-# away_team_name = output["matches"][0]["awayTeam"]["name"]
-
-# print(home_team_name, away_team_name)
+away_team_logo = output["matches"][0]["awayTeam"]["crest"]
+away_team_name = output["matches"][0]["awayTeam"]["name"]
