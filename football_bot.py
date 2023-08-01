@@ -1,3 +1,4 @@
+import os
 import requests
 import discord
 from discord.ext import commands
@@ -25,7 +26,7 @@ top_5_ligues_array = [{"premier_league": 2021}, {"ligue_one": 2015}, {"bundeslig
                       {"serie_a": 2019}, {"primeira_liga": 2017}]
 
 endpoint_headers = {
-    "X-Auth-Token": "aaf02ea4244745a5a8140e4f4cbdbc90"
+    "X-Auth-Token": os.environ.get("API_KEY")
 }
 
 endpoint_params = {
@@ -145,7 +146,7 @@ async def list_teams(ctx, team_id):
     await ctx.send(embeds=[embed, embed1, embed2])
 
 
-bot.run("")
+bot.run(os.environ.get("BOT_TOKEN"))
 
 # TODO dockerize the bot
 # TODO fill README
