@@ -1,17 +1,18 @@
+import requests
 import discord
 from discord.ext import commands
-import requests
+from discord.utils import find
 from datetime import date, timedelta, datetime
 from table2ascii import table2ascii as t2a, PresetStyle
 
 
 # Football api: https://www.football-data.org/documentation/quickstart
 # Discord documentation: https://discordpy.readthedocs.io/en/stable/
-
 # Message look like a table: https://stackoverflow.com/questions/63565825/how-to-make-data-to-be-shown-in-tabular-form-in-discord-py
 # Commands discord docu: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
 # Send an image response: https://stackoverflow.com/questions/63100479/multiple-photos-in-discord-py-embed
-# embed: https://leovoel.github.io/embed-visualizer/
+# embed visualizer: https://leovoel.github.io/embed-visualizer/
+# to invite bot: https://discord.com/api/oauth2/authorize?client_id=1135686556993208471&permissions=2419452944&scope=bot
 
 
 CURRENT_DATE = date.today()
@@ -35,16 +36,52 @@ endpoint_params = {
 }
 
 
+# Handles errors
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        embed = discord.Embed(title="Oops!", 
+                              description="The command you inputed has missing arguments. " \
+                              "Please check `$instructions` for more information", 
+                              colour=discord.Colour(0x4a90e2))
+        
+        await ctx.send(embed=embed)
+    
+    elif isinstance(error, commands.CommandNotFound):
+        embed = discord.Embed(title="Sorry!", 
+                              description="This command does not exist. " \
+                              "Please check `$instructions` for more information", 
+                              colour=discord.Colour(0x4a90e2))
+        
+        await ctx.send(embed=embed)
+
+
+# Send a greetings message and how to start using it
+@bot.event
+async def on_guild_join(guild):
+    general = find(lambda x: x.name == "general",  guild.text_channels)
+    if general and general.permissions_for(guild.me).send_messages:
+        embed = discord.Embed(title="Hello!", 
+                              description="To start using my features use `$instructions` to know how to use me!", 
+                              colour=discord.Colour(0x4a90e2))
+        await general.send(embed=embed)
+
+
+# Minimal how to use the bot message
 @bot.command(name="instructions")
 async def help(ctx):
-    embed = discord.Embed(title="Instructions", colour=discord.Colour(0xca024), 
-                          description="This bot gives you the next match of the inputed team.")
+    embed = discord.Embed(title="Instructions", 
+                          description="With this bot you can get the next match of your favourite team!." \
+                          "\nAll the commands are in lower case and snake case", 
+                          colour=discord.Colour(0x4a90e2))
 
-    embed.add_field(name="list_teams", 
-                    value="This command expects one of the top 5 leagues as parameters of the command, and as output gives you a list of all the teams of that league with their respective ids.\nExample: $list_teams premier_league")
-    
-    embed.add_field(name="next_match", 
-                    value="With the previously gotten id you can get the next match of that team.\nExample: $list_match 61")
+    embed.add_field(name="$list_teams", 
+                    value="This command expects one of the top 5 leagues as parameters of the command," \
+                    "and as output gives you a list of all the teams of that league with their respective ids." \
+                    "\n**Example**: ```$list_teams premier_league```")
+    embed.add_field(name="$next_match", 
+                    value="With the previously gotten id you can get the next match of that team." \
+                    "\n**Example**: ```$next_match 61```")
 
     await ctx.send(embed=embed)
 
@@ -93,7 +130,7 @@ async def list_teams(ctx, team_id):
     team_name = r.json()["name"]
 
     embed = discord.Embed(title=f"{team_name} next match is on the day {formatted_date}", 
-                          colour=discord.Colour(0x4be080), url="https://manumafe98.github.io/cv/")
+                          colour=discord.Colour(0x4a90e2), url="https://manumafe98.github.io/cv/")
 
     embed.add_field(name="Home Team", value=home_team_name, inline=True)
     embed.add_field(name="Away Team", value=away_team_name, inline=True)
@@ -106,6 +143,10 @@ async def list_teams(ctx, team_id):
     embed2.set_image(url=away_team_logo)
 
     await ctx.send(embeds=[embed, embed1, embed2])
-    
 
-bot.run("MTEzNTY4NjU1Njk5MzIwODQ3MQ.G8xIoQ.dG8vTtmD_r3Oa19dvGGaqntY95E2KcgJkBzHeQ")
+
+bot.run("")
+
+# TODO dockerize the bot
+# TODO fill README
+# TODO add handling error on guild join if general does not exist
