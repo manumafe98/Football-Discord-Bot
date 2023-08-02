@@ -127,7 +127,7 @@ async def list_teams(ctx, team_id):
     datetime_obj = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
     formatted_date = datetime_obj.strftime("%d/%m")
     
-    datetime_now = datetime.now()
+    datetime_now = datetime.utcnow()
 
     remaining_time_until_match = (datetime_obj - datetime_now)
     days_str, time_str = str(remaining_time_until_match).split(",")
