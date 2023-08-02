@@ -158,6 +158,5 @@ async def list_teams(ctx, team_id):
 
 bot.run(os.environ.get("BOT_TOKEN"))
 
-# TODO dockerize the bot
 # TODO fill README
 # TODO add handling error on guild join if general does not exist
