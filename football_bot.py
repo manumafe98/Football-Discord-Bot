@@ -126,11 +126,21 @@ async def list_teams(ctx, team_id):
     timestamp = output["matches"][0]["utcDate"]
     datetime_obj = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
     formatted_date = datetime_obj.strftime("%d/%m")
+    
+    datetime_now = datetime.now()
+
+    remaining_time_until_match = (datetime_obj - datetime_now)
+    days_str, time_str = str(remaining_time_until_match).split(",")
+    
+    remaining_days = days_str.split()[0]
+    remaining_hours = time_str.split(":")[0]
 
     r = requests.get(f"https://api.football-data.org/v4/teams/{team_id}", headers=endpoint_headers)
     team_name = r.json()["name"]
 
-    embed = discord.Embed(title=f"{team_name} next match is on the day {formatted_date}", 
+    embed = discord.Embed(title=f"{team_name} next match is on the day {formatted_date}",
+                          description=f"Remaining time until the match, "\
+                          f"{remaining_days} days and {remaining_hours} hours",
                           colour=discord.Colour(0x4a90e2), url="https://manumafe98.github.io/cv/")
 
     embed.add_field(name="Home Team", value=home_team_name, inline=True)
