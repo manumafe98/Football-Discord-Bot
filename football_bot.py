@@ -7,15 +7,6 @@ from datetime import date, timedelta, datetime
 from table2ascii import table2ascii as t2a, PresetStyle
 
 
-# Football api: https://www.football-data.org/documentation/quickstart
-# Discord documentation: https://discordpy.readthedocs.io/en/stable/
-# Message look like a table: https://stackoverflow.com/questions/63565825/how-to-make-data-to-be-shown-in-tabular-form-in-discord-py
-# Commands discord docu: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
-# Send an image response: https://stackoverflow.com/questions/63100479/multiple-photos-in-discord-py-embed
-# embed visualizer: https://leovoel.github.io/embed-visualizer/
-# to invite bot: https://discord.com/api/oauth2/authorize?client_id=1135686556993208471&permissions=2419452944&scope=bot
-
-
 CURRENT_DATE = date.today()
 
 intents = discord.Intents.default()
@@ -60,12 +51,21 @@ async def on_command_error(ctx, error):
 # Send a greetings message and how to start using it
 @bot.event
 async def on_guild_join(guild):
-    general = find(lambda x: x.name == "general",  guild.text_channels)
+    general = discord.utils.get(guild.text_channels, name="general")
     if general and general.permissions_for(guild.me).send_messages:
         embed = discord.Embed(title="Hello!", 
-                              description="To start using my features use `$instructions` to know how to use me!", 
+                              description="To start using my features, use `$instructions`", 
                               colour=discord.Colour(0x4a90e2))
         await general.send(embed=embed)
+    else:
+        available_text_channels = [channel for channel in guild.text_channels 
+                                   if channel.permissions_for(guild.me).send_messages]
+        if available_text_channels:
+            first_available_channel = available_text_channels[0]
+            embed = discord.Embed(title="Hello!", 
+                                  description="To start using my features, use `$instructions`", 
+                                  colour=discord.Colour(0x4a90e2))
+            await first_available_channel.send(embed=embed)
 
 
 # Minimal how to use the bot message
