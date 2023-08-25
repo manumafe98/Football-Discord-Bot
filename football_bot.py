@@ -130,17 +130,22 @@ async def list_teams(ctx, team_id):
     datetime_now = datetime.utcnow()
 
     remaining_time_until_match = (datetime_obj - datetime_now)
-    days_str, time_str = str(remaining_time_until_match).split(",")
-    
-    remaining_days = days_str.split()[0]
-    remaining_hours = time_str.split(":")[0]
 
+    if "day" in str(remaining_time_until_match):
+        days_str, time_str = str(remaining_time_until_match).split(",")
+        remaining_days = days_str.split()[0]
+        remaining_hours = time_str.split(":")[0]
+        description_text = f"Remaining time until the match, {remaining_days} days and {remaining_hours} hours"
+    else:
+        remaining_hours = str(remaining_time_until_match).split(":")[0]
+        description_text = f"Remaining time until the match, {remaining_hours} hours"
+
+    
     r = requests.get(f"https://api.football-data.org/v4/teams/{team_id}", headers=endpoint_headers)
     team_name = r.json()["name"]
 
     embed = discord.Embed(title=f"{team_name} next match is on the day {formatted_date}",
-                          description=f"Remaining time until the match, "\
-                          f"{remaining_days} days and {remaining_hours} hours",
+                          description=description_text,
                           colour=discord.Colour(0x4a90e2), url="https://manumafe98.github.io/cv/")
 
     embed.add_field(name="Home Team", value=home_team_name, inline=True)
@@ -157,3 +162,5 @@ async def list_teams(ctx, team_id):
 
 
 bot.run(os.environ.get("BOT_TOKEN"))
+
+# TODO refine the time shown, cause currently there is no cover for minutes and seconds left for the match
