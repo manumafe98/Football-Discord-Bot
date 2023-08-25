@@ -136,6 +136,8 @@ async def list_teams(ctx, team_id):
         remaining_days = days_str.split()[0]
         remaining_hours = time_str.split(":")[0]
         description_text = f"Remaining time until the match, {remaining_days} days and {remaining_hours} hours"
+    elif timedelta(hours=1) > remaining_time_until_match:
+        description_text = f"Less than 1 hour remaining for the match"
     else:
         remaining_hours = str(remaining_time_until_match).split(":")[0]
         description_text = f"Remaining time until the match, {remaining_hours} hours"
@@ -162,5 +164,3 @@ async def list_teams(ctx, team_id):
 
 
 bot.run(os.environ.get("BOT_TOKEN"))
-
-# TODO refine the time shown, cause currently there is no cover for minutes and seconds left for the match
